@@ -19,6 +19,8 @@ export default function Cart() {
     getCart().then(cartData => {
       if (cartData) {
         setCart(cartData)
+      } else {
+        setCart(null)
       }
     })
   }
@@ -26,6 +28,7 @@ export default function Cart() {
   useEffect(() => {
     refresh()
     getPaymentTypes().then(paymentData => {
+      console.log("Payment types:", paymentData)
       if (paymentData) {
         setPaymentTypes(paymentData)
       }
@@ -48,12 +51,18 @@ export default function Cart() {
         paymentTypes={paymentTypes}
         completeOrder={completeOrder}
       />
-      <CardLayout title="Your Current Order">
+      <CardLayout title="Your Current Order"> {
+        cart && cart.lineitems?.length > 0 ? (
+          <>
         <CartDetail cart={cart} removeProduct={removeProduct} />
-        <>
+        
           <a className="card-footer-item" onClick={() => setShowCompleteForm(true)}>Complete Order</a>
           <a className="card-footer-item">Delete Order</a>
         </>
+        ) : (
+          <p className='p-4'>You have no items in your cart.</p>
+        )
+}
       </CardLayout>
     </>
   )

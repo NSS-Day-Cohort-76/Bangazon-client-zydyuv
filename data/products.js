@@ -31,7 +31,7 @@ export function getProductById(id) {
 }
 
 export function addProductToOrder(id) {
-  return fetchWithResponse(`products/${id}/add_to_order`, {
+  return fetchWithResponse(`lineitems`, {
     method: 'POST',
     headers: {
       Authorization: `Token ${localStorage.getItem('token')}`
