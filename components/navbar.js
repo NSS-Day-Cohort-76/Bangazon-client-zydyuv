@@ -63,8 +63,8 @@ useEffect(() => {
           {
             profile.store ?
               <>
-                <Link href={`/stores/${profile.store.id}`} className="navbar-item">
-  View Your Store
+                <Link href="/stores/my-store" className="navbar-item">
+  My Store
 </Link>
 
                 <Link href="/products/new" className="navbar-item">Add a new Product</Link>
