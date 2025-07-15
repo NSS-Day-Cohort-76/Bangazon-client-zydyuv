@@ -14,29 +14,6 @@ export default function Navbar() {
 useEffect(() => {
   if (token) {
     setIsLoggedIn(true)
-
-    fetch("http://localhost:8000/stores/my_store", {
-      headers: {
-        Authorization: `Token ${token}`
-      }
-    })
-      .then(res => {
-        if (res.status === 404) {
-          return null
-        } else if (res.ok) {
-          return res.json()
-        } else {
-          throw new Error("Failed to fetch store")
-        }
-      })
-      .then(data => {
-        if (data) {
-          setProfile(prev => ({ ...prev, store: data.store }))
-        } else {
-          setProfile(prev => ({ ...prev, store: null }))
-        }
-      })
-      .catch(err => console.error(err))
   }
 }, [token])
 
