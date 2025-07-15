@@ -1,18 +1,46 @@
 import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 import { useAppContext } from '../context/state'
+import { getMyStore } from '../data/stores.js'
 
 export default function Navbar() {
-  const { token, profile } = useAppContext()
+  const { token, profile, setProfile } = useAppContext()
   const hamburger = useRef()
   const navbar = useRef()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  useEffect(() => {
-    if (token) {
-      setIsLoggedIn(true)
-    }
-  }, [token])
+
+
+useEffect(() => {
+  if (token) {
+    setIsLoggedIn(true)
+
+    fetch("http://localhost:8000/stores/my_store", {
+      headers: {
+        Authorization: `Token ${token}`
+      }
+    })
+      .then(res => {
+        if (res.status === 404) {
+          return null
+        } else if (res.ok) {
+          return res.json()
+        } else {
+          throw new Error("Failed to fetch store")
+        }
+      })
+      .then(data => {
+        if (data) {
+          setProfile(prev => ({ ...prev, store: data.store }))
+        } else {
+          setProfile(prev => ({ ...prev, store: null }))
+        }
+      })
+      .catch(err => console.error(err))
+  }
+}, [token])
+
+
 
   const showMobileNavbar = () => {
     hamburger.current.classList.toggle('is-active')
@@ -35,7 +63,10 @@ export default function Navbar() {
           {
             profile.store ?
               <>
-                <Link href={`/stores/${profile.store.id}`}><a className="navbar-item">View Your Store</a></Link>
+                <Link href={`/stores/${profile.store.id}`} className="navbar-item">
+  View Your Store
+</Link>
+
                 <Link href="/products/new" className="navbar-item">Add a new Product</Link>
               </>
               :
