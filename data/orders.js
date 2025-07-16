@@ -1,5 +1,7 @@
 import { fetchWithResponse } from './fetcher'
 
+const API = "http://localhost:8000"
+
 export function getCart() {
   return fetchWithResponse('cart', {
     headers: {
@@ -29,5 +31,19 @@ export function completeCurrentOrder(orderId, paymentTypeId) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({paymentTypeId})
+  })
+}
+
+export function deleteCart() {
+  return fetch(`${API}/profile/cart`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Token ${localStorage.getItem('token')}`
+    }
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error("Failed to delete cart")
+    }
+    return response
   })
 }

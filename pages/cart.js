@@ -5,7 +5,7 @@ import Layout from '../components/layout'
 import Navbar from '../components/navbar'
 import CartDetail from '../components/order/detail'
 import CompleteFormModal from '../components/order/form-modal'
-import { completeCurrentOrder, getCart } from '../data/orders'
+import { completeCurrentOrder, deleteCart, getCart } from '../data/orders'
 import { getPaymentTypes } from '../data/payment-types'
 import { removeProductFromOrder } from '../data/products'
 
@@ -43,6 +43,10 @@ export default function Cart() {
     removeProductFromOrder(productId).then(refresh)
   }
 
+  const handleDeleteOrder = () => {
+    deleteCart().then(() => refresh())
+  }
+
   return (
     <>
       <CompleteFormModal
@@ -57,7 +61,7 @@ export default function Cart() {
         <CartDetail cart={cart} removeProduct={removeProduct} />
         
           <a className="card-footer-item" onClick={() => setShowCompleteForm(true)}>Complete Order</a>
-          <a className="card-footer-item">Delete Order</a>
+          <a className="card-footer-item" onClick={handleDeleteOrder}>Delete Order</a>
         </>
         ) : (
           <p className='p-4'>You have no items in your cart.</p>
