@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getUserProfile } from '../data/auth';
 import { useRouter } from "next/router"
-
+import { getMyStore } from '../data/stores.js';
 const AppContext = createContext();
 
 export function AppWrapper({ children }) {
@@ -15,16 +15,27 @@ export function AppWrapper({ children }) {
 
   useEffect(() => {
     const authRoutes = ['/login', '/register']
-    if (token) {
-      localStorage.setItem('token', token)
-      if (!authRoutes.includes(router.pathname)) {
-        getUserProfile().then((profileData) => {
-          if (profileData) {
-            setProfile(profileData)
-          }
-        })
+if (token) {
+  localStorage.setItem('token', token)
+  if (!authRoutes.includes(router.pathname)) {
+    getUserProfile().then((profileData) => {
+      if (profileData) {
+        // First set basic profile info
+        setProfile(profileData)
+
+        // Then try to fetch the user's store
+        getMyStore()
+          .then(store => {
+            setProfile(prev => ({ ...prev, store }))
+          })
+          .catch(() => {
+            setProfile(prev => ({ ...prev, store: null }))
+          })
       }
-    }
+    })
+  }
+}
+
   }, [token])
 
   return (
