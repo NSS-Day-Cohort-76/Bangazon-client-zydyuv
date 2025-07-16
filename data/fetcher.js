@@ -27,3 +27,7 @@ export const fetchWithoutResponse = (resource, options = {}) =>
   fetch(`${API_URL}/${resource}`, options)
     .then(checkError)
     .catch(catchError);
+
+
+
+
