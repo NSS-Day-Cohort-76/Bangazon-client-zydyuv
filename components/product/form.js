@@ -6,9 +6,15 @@ import { Textarea, Select, Input } from '../form-elements'
 export default function ProductForm({ formEl, saveEvent, title, router }) {
   const [categories, setCategories] = useState([])
 
-  useEffect(() => {
+
+useEffect(() => {
+  if (token) {
     getCategories().then(catData => setCategories(catData))
-  }, [])
+  }
+}, [token])
+
+
+
 
   return (
     <CardLayout title={title}>

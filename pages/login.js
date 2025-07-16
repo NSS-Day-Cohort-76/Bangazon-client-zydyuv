@@ -6,27 +6,47 @@ import Layout from '../components/layout'
 import Navbar from '../components/navbar'
 import { useAppContext } from '../context/state'
 import { login } from '../data/auth'
+import { getUserProfile } from '../data/auth'
+
+
 
 export default function Login() {
-  const {setToken} = useAppContext()
+  const { setToken, setProfile } = useAppContext()
   const username = useRef('')
   const password = useRef('')
   const router = useRouter()
 
-  const submit = (e) => {
-    e.preventDefault()
-    const user = {
-      username: username.current.value,
-      password: password.current.value,
-    }
+const submit = (e) => {
+  e.preventDefault()
+  const user = {
+    username: username.current.value,
+    password: password.current.value,
+  }
 
-    login(user).then((res) => {
+  login(user)
+    .then((res) => {
       if (res.token) {
+        // 🪪 Store token
+        localStorage.setItem('token', res.token)
         setToken(res.token)
-        router.push('/')
+
+        // 👤 Get profile next
+        return getUserProfile()
+      } else {
+        throw new Error("Login failed")
       }
     })
-  }
+    .then(profile => {
+      setProfile(profile) // ✅ Set profile in context
+
+      // ✅ Only redirect after everything is ready
+      router.push('/')
+    })
+    .catch(err => {
+      console.error("Login error:", err)
+      // optionally show error to user
+    })
+}
 
   return (
     <div className="columns is-centered">
