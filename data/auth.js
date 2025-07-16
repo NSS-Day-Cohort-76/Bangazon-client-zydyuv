@@ -1,29 +1,29 @@
-import { fetchWithResponse } from "./fetcher"
+import { fetchWithResponse } from "./fetcher";
 
 export function login(user) {
-  return fetchWithResponse('login', {
-    method: 'POST',
+  return fetchWithResponse("login", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(user)
-  })
+    body: JSON.stringify(user),
+  });
 }
 
 export function register(user) {
-  return fetchWithResponse('register', {
-    method: 'POST',
+  return fetchWithResponse("register", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(user)
-  })
+    body: JSON.stringify(user),
+  });
 }
 
 export function getUserProfile() {
-  return fetchWithResponse('my-profile', {
+  return fetchWithResponse("profile", {
     headers: {
-      Authorization: `Token ${localStorage.getItem('token')}`,
-    }
-  })
+      Authorization: `Token ${localStorage.getItem("token")}`,
+    },
+  });
 }
