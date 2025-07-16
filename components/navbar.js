@@ -1,18 +1,23 @@
 import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 import { useAppContext } from '../context/state'
+import { getMyStore } from '../data/stores.js'
 
 export default function Navbar() {
-  const { token, profile } = useAppContext()
+  const { token, profile, setProfile } = useAppContext()
   const hamburger = useRef()
   const navbar = useRef()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  useEffect(() => {
-    if (token) {
-      setIsLoggedIn(true)
-    }
-  }, [token])
+
+
+useEffect(() => {
+  if (token) {
+    setIsLoggedIn(true)
+  }
+}, [token])
+
+
 
   const showMobileNavbar = () => {
     hamburger.current.classList.toggle('is-active')
@@ -29,13 +34,16 @@ export default function Navbar() {
         </a>
         <div className="navbar-dropdown is-right">
           <Link href="/cart" className="navbar-item">Cart</Link>
-          <Link href="/my-orders" className="navbar-item">My Orders</Link>
+          <Link href="/orders" className="navbar-item">My Orders</Link>
           <Link href="/payments" className="navbar-item">Payment Methods</Link>
           <Link href="/profile" className="navbar-item">Profile</Link>
           {
             profile.store ?
               <>
-                <Link href={`/stores/${profile.store.id}`}><a className="navbar-item">View Your Store</a></Link>
+                <Link href="/stores/my-store" className="navbar-item">
+  My Store
+</Link>
+
                 <Link href="/products/new" className="navbar-item">Add a new Product</Link>
               </>
               :

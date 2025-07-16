@@ -21,9 +21,14 @@ export function register(user) {
 }
 
 export function getUserProfile() {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No auth token found");
+
   return fetchWithResponse("profile", {
+    method: "GET",
     headers: {
-      Authorization: `Token ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
     },
   });
 }

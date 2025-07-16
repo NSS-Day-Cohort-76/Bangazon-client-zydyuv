@@ -13,22 +13,34 @@ export default function NewStore() {
   const descriptionEl = useRef()
   const router = useRouter()
 
-  const saveStore = () => {
-    addStore({
-      name: nameEl.current.value,
-      description: descriptionEl.current.value
-    }).then((res) => {
-      setProfile({
-        ...profile,
-        store: res
-      })
-      router.push(`/stores/${res.id}`)
-    })
-  }
+const saveStore = () => {
+  addStore({
+    name: nameEl.current.value,
+    description: descriptionEl.current.value
+  })
+  .then((res) => {
+    if (res?.id) {
+      setProfile({ ...profile, store: res });
+      router.push(`/stores/${res.id}`);
+    } else {
+      console.error("Store created but no ID returned!");
+    }
+  })
+  .catch((err) => {
+    console.error("Error creating store:", err);
+  });
+}
+
 
   return (
-    <StoreForm nameEl={nameEl} descriptionEl={descriptionEl} saveEvent={saveStore} router={router} title="Create your store">
-      <p>Give your new store a name and description. Then add products on the next page</p>
+    <StoreForm
+      nameEl={nameEl}
+      descriptionEl={descriptionEl}
+      saveEvent={saveStore}
+      router={router}
+      title="Create your store"
+    >
+      <p>Give your new store a name and description. Then add products on the next page.</p>
     </StoreForm>
   )
 }
