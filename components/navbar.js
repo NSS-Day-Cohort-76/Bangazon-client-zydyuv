@@ -2,20 +2,38 @@ import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 import { useAppContext } from '../context/state'
 import { getMyStore } from '../data/stores.js'
+import { getUserProfile } from '../data/auth.js'
+import { useRouter } from 'next/router.js'
 
 export default function Navbar() {
   const { token, profile, setProfile } = useAppContext()
   const hamburger = useRef()
   const navbar = useRef()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [profileLoading, setProfileLoading] = useState(true)
 
-
+const router = useRouter()
 
 useEffect(() => {
   if (token) {
     setIsLoggedIn(true)
+    setProfileLoading(true)
+
+    getUserProfile()
+      .then(profile => {
+        setProfile(profile)
+        setProfileLoading(false)
+      })
+      .catch(err => {
+        console.error("Failed to fetch user profile", err)
+        setIsLoggedIn(false)
+        setProfileLoading(false)
+      })
+  } else {
+    setIsLoggedIn(false)
+    setProfile(null)
   }
-}, [token])
+}, [token, router.asPath])  // 👈 add router.asPath to rerun effect after page nav
 
 
 
@@ -24,44 +42,64 @@ useEffect(() => {
     navbar.current.classList.toggle('is-active')
   }
 
-  const getLoggedInButtons = () => {
-    return (
-      <div className="navbar-item has-dropdown is-hoverable">
-        <a className="navbar-link">
-          <span className="icon">
-            <i className="fas fa-user-circle is-medium"></i>
-          </span>
-        </a>
-        <div className="navbar-dropdown is-right">
-          <Link href="/cart" className="navbar-item">Cart</Link>
-          <Link href="/orders" className="navbar-item">My Orders</Link>
-          <Link href="/payments" className="navbar-item">Payment Methods</Link>
-          <Link href="/profile" className="navbar-item">Profile</Link>
-          {
-            profile.store ?
-              <>
-                <Link href="/stores/my-store" className="navbar-item">
-  My Store
-</Link>
+const getLoggedInButtons = () => {
+  // 🚨 This guards against 'profile' being null/undefined before the fetch completes
+if (profileLoading) {
+  return (
+    <div className="navbar-item">
+      <span className="icon is-large">
+        <i className="fas fa-spinner fa-pulse fa-lg"></i>
+      </span>
+    </div>
+  )
+}
 
-                <Link href="/products/new" className="navbar-item">Add a new Product</Link>
-              </>
-              :
-              <Link href="/stores/new" className="navbar-item">Interested in selling?</Link>
-          }
-          <hr className="navbar-divider"></hr>
-          <a className="navbar-item" onClick={
-            () => {
-              localStorage.removeItem('token')
-              setIsLoggedIn(false)
-            }}
-          >
-            Log out
-          </a>
-        </div>
+if (!profile) return null  // fallback if somehow loading is done but profile is null
+
+
+  // ✅ Check if the profile has a store
+  const hasStore = profile.store !== null && profile.store !== undefined
+
+  return (
+    <div className="navbar-item has-dropdown is-hoverable">
+      <a className="navbar-link">
+        <span className="icon">
+          <i className="fas fa-user-circle is-medium"></i>
+        </span>
+      </a>
+      <div className="navbar-dropdown is-right">
+        <Link href="/cart" className="navbar-item">Cart</Link>
+        <Link href="/orders" className="navbar-item">My Orders</Link>
+        <Link href="/payments" className="navbar-item">Payment Methods</Link>
+        <Link href="/profile" className="navbar-item">Profile</Link>
+
+        {/* 👇 Conditional rendering based on store existence */}
+        {
+          hasStore ? (
+            <>
+              <Link href="/stores/my-store" className="navbar-item">My Store</Link>
+              <Link href="/products/new" className="navbar-item">Add a new Product</Link>
+            </>
+          ) : (
+            <Link href="/stores/new" className="navbar-item">Interested in selling?</Link>
+          )
+        }
+
+        <hr className="navbar-divider" />
+<a className="navbar-item" onClick={() => {
+  localStorage.removeItem('token')
+  setIsLoggedIn(false)
+  setProfile(null)           // 👈 clear user profile
+  router.push('/login')      // 👈 redirect to login page
+}}>
+  Log out
+</a>
+
       </div>
-    )
-  }
+    </div>
+  )
+}
+
 
   const getLoggedOutButtons = () => {
     return (

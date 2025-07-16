@@ -22,7 +22,7 @@ export function register(user) {
 
 export function getUserProfile() {
   const token = localStorage.getItem("token");
-  if (!token) throw new Error("No auth token found");
+  if (!token) return Promise.resolve(null);
 
   return fetchWithResponse("profile", {
     method: "GET",
