@@ -1,14 +1,30 @@
 import { useRouter } from "next/router"
-import { useState, useRef } from "react"
-import { addProductToOrder, recommendProduct } from "../../data/products"
+import { useState, useRef, useEffect } from "react"
+import { addProductToOrder, recommendProduct, likeProduct, unLikeProduct } from "../../data/products"
+import { useAppContext } from "../../context/state"
 import Modal from "../modal"
 import { Input } from "../form-elements"
 
 export function Detail({ product, like, unlike }) {
   const router = useRouter()
+  const { profile, setProfile} = useAppContext()
   const usernameEl = useRef()
   const [showModal, setShowModal] = useState(false)
   const [showError, setShowError] = useState(false)
+  const [isLiked, setIsLiked] = useState(false)
+
+  // useEffect(() => {
+  //   const liked = profile?.likes?.some(p => p.id === product.id)
+  //   console.log("Liked?", liked, "Profile Likes:", profile?.likes, "Product ID:", product.id);
+  //   setIsLiked(liked)
+  // }, [profile])
+  useEffect(() => {
+  if (!profile || !profile.likes || !product) return;
+
+  const liked = profile.likes.some(p => String(p.id) === String(product.id));
+  console.log('Checking if liked:', liked);
+  setIsLiked(liked);
+}, [profile, product]);
 
 
   const addToCart = () => {
@@ -28,6 +44,36 @@ export function Detail({ product, like, unlike }) {
       }
     })
   }
+
+  const handleLike = () => {
+    likeProduct(product.id).then(() => {
+      setIsLiked(true)
+      setProfile(prev => ({
+        ...prev, 
+        // likes: [...prev.likes, product]
+        likes: [...(prev.likes || []), product]
+      }))
+    })
+  }
+
+  // const handleUnlike = () => {
+  //   unLikeProduct(product.id).then(() => {
+  //     setIsLiked(false)
+  //     setProfile(prev => ({
+  //       ...prev,
+  //       likes: prev.likes.filter(p => p.id !== product.id)
+  //     }))
+  //   })
+  // }
+  const handleUnlike = () => {
+  unLikeProduct(product.id).then(() => {
+    setIsLiked(false);
+    setProfile(prev => ({
+      ...prev,
+      likes: (prev.likes || []).filter(p => p.id !== product.id)
+    }));
+  });
+};
 
   return (
     <>
@@ -70,15 +116,15 @@ export function Detail({ product, like, unlike }) {
               </p>
               <p className="control">
                 {
-                  product.is_liked ?
-                    <button className="button is-link is-outlined" onClick={unlike}>
+                  isLiked ?
+                    <button className="button is-link is-outlined" onClick={handleUnlike}>
                       <span className="icon is-small">
                         <i className="fas fa-heart-broken"></i>
                       </span>
                       <span>Unlike Product</span>
                     </button>
                     :
-                    <button className="button is-link is-outlined" onClick={like}>
+                    <button className="button is-link is-outlined" onClick={handleLike}>
                       <span className="icon is-small">
                         <i className="fas fa-heart"></i>
                       </span>

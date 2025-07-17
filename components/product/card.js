@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export function ProductCard({ product, removeProduct, isOwner = false, width="is-one-quarter" }) {
+export function ProductCard({ product, removeProduct, isOwner = false, width="is-one-quarter" , onUnlike, onLikeToggle, liked}) {
   return (
     <div className={`column ${width}`}>
       <div className="card">
@@ -18,6 +18,19 @@ export function ProductCard({ product, removeProduct, isOwner = false, width="is
           <div className="content">
             {product.description}
           </div>
+          {onUnlike && (
+            <div className='mt-3'>
+              <button
+                className='button is-danger is-small'
+                onClick={() => onUnlike(product.id)}
+              >
+                <span className='icon is-small'>
+                  <i className='fas fa-heart-broken'></i>
+                </span>
+                <span>Unlike</span>
+              </button>
+            </div>
+          )}
         </div>
         {
           isOwner ?
