@@ -6,16 +6,28 @@ import { ProductCard } from '../components/product/card'
 import { StoreCard } from '../components/store/card'
 import { useAppContext } from '../context/state'
 import { getUserProfile } from '../data/auth'
+import { getLikedProducts } from '../data/products'
 
 export default function Profile() {
   const { profile, setProfile } = useAppContext()
 
   useEffect(() => {
-    getUserProfile().then((profileData) => {
-      if (profileData) {
-        setProfile(profileData)
-      }
-    })
+    Promise.all([getUserProfile(), getLikedProducts()])
+      .then(([profileData, likedProducts]) => {
+        if (profileData && likedProducts) {
+          // If your likedProducts come wrapped inside a 'product' property (from your Like model), unwrap them:
+          const likedProductsList = likedProducts.map(like =>
+            like.product ? like.product : like
+          )
+          setProfile({
+            ...profileData,
+            likes: likedProductsList,
+          })
+        }
+      })
+      .catch((error) => {
+        console.error("Error loading profile or liked products:", error)
+      })
   }, [])
 
   return (
