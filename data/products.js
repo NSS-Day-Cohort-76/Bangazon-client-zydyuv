@@ -15,7 +15,7 @@ export function getProducts(query=undefined) {
 }
 
 export function getCategories() {
-  return fetchWithResponse('categories', {
+  return fetchWithResponse('productcategories', {
     headers: {
       Authorization: `Token ${localStorage.getItem('token')}`
     }
