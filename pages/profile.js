@@ -28,40 +28,39 @@ export default function Profile() {
       })
   }, [])
 
+  // Like/Unlike functionality
   const isLiked = (productId) => {
-    return profile.likes?.some(p => p.id === productId)
+    return profile?.likes?.some(p => p.id === productId)
   }
 
   const handleLikeToggle = (productId) => {
-    const product = profile.likes.find(p => p.id === productId)
+    const product = profile?.likes?.find(p => p.id === productId)
 
     if (isLiked(productId)) {
       unLikeProduct(productId)
         .then(() => {
           setProfile(prev => ({
             ...prev,
-            likes: prev.likes.filter(p => p.id !== productId) || []
+            likes: prev.likes?.filter(p => p.id !== productId) || []
           }))
         })
         .catch(err => console.error("Error unliking product:", err))
     } else {
       likeProduct(productId)
         .then(() => {
-          const likedProduct = profile.recommendations?.find(r => r.product.id === productId)?.product
-            || profile.recommended_by?.find(r => r.product.id === productId)?.product
+          const likedProduct = profile?.recommendations?.find(r => r.product.id === productId)?.product
+            || profile?.recommended_by?.find(r => r.product.id === productId)?.product
 
           if (likedProduct) {
             setProfile(prev => ({
               ...prev,
-              likes: [...prev.likes, likedProduct]
+              likes: [...(prev.likes || []), likedProduct]
             }))
           }
         })
         .catch(err => console.error("Error liking product:", err))
     }
   }
-
-  if (!profile) return <p>Loading profile...</p>
 
   // Helper function to render empty state
   const renderEmptyState = (message) => (
@@ -72,6 +71,8 @@ export default function Profile() {
       <p className="has-text-grey">{message}</p>
     </div>
   )
+
+  if (!profile) return <p>Loading profile...</p>
 
   return (
     <div className="section">
@@ -151,7 +152,14 @@ export default function Profile() {
                 <div className="columns is-multiline" key="content">
                   {profile.recommended_by && profile.recommended_by.length > 0 ? (
                     profile.recommended_by.map(recommendation => (
-                      <ProductCard product={recommendation.product} key={recommendation.product.id} width="is-one-third-desktop is-half-tablet" />
+                      <ProductCard 
+                        product={recommendation.product} 
+                        key={recommendation.product.id} 
+                        width="is-one-third-desktop is-half-tablet"
+                        onLike={() => handleLikeToggle(recommendation.product.id)}
+                        onUnlike={() => handleLikeToggle(recommendation.product.id)}
+                        liked={isLiked(recommendation.product.id)}
+                      />
                     ))
                   ) : (
                     <div className="column is-12">
@@ -171,7 +179,14 @@ export default function Profile() {
                 <div className="columns is-multiline" key="content">
                   {profile.recommendations && profile.recommendations.length > 0 ? (
                     profile.recommendations.map(recommendation => (
-                      <ProductCard product={recommendation.product} key={recommendation.product.id} width="is-one-third-desktop is-half-tablet" />
+                      <ProductCard 
+                        product={recommendation.product} 
+                        key={recommendation.product.id} 
+                        width="is-one-third-desktop is-half-tablet"
+                        onLike={() => handleLikeToggle(recommendation.product.id)}
+                        onUnlike={() => handleLikeToggle(recommendation.product.id)}
+                        liked={isLiked(recommendation.product.id)}
+                      />
                     ))
                   ) : (
                     <div className="column is-12">
@@ -191,7 +206,13 @@ export default function Profile() {
                 <div className="columns is-multiline" key="content">
                   {profile.likes && profile.likes.length > 0 ? (
                     profile.likes.map(product => (
-                      <ProductCard product={product} key={product.id} width="is-one-third-desktop is-half-tablet" />
+                      <ProductCard 
+                        product={product} 
+                        key={product.id} 
+                        width="is-one-third-desktop is-half-tablet"
+                        onUnlike={() => handleLikeToggle(product.id)}
+                        liked={isLiked(product.id)}
+                      />
                     ))
                   ) : (
                     <div className="column is-12">
