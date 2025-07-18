@@ -6,7 +6,7 @@ import { ProductCard } from '../components/product/card'
 import { StoreCard } from '../components/store/card'
 import { useAppContext } from '../context/state'
 import { getUserProfile } from '../data/auth'
-import { getLikedProducts } from '../data/products'
+import { getLikedProducts, likeProduct, unLikeProduct } from '../data/products'
 
 export default function Profile() {
   const { profile, setProfile } = useAppContext()
@@ -16,8 +16,7 @@ export default function Profile() {
       .then(([profileData, likedProducts]) => {
         if (profileData && likedProducts) {
           const likedProductsList = likedProducts.map(like =>
-            like.product ? like.product : like
-          )
+            like.product)
           setProfile({
             ...profileData,
             likes: likedProductsList,
@@ -28,6 +27,41 @@ export default function Profile() {
         console.error("Error loading profile or liked products:", error)
       })
   }, [])
+
+  const isLiked = (productId) => {
+    return profile.likes?.some(p => p.id === productId)
+  }
+
+  const handleLikeToggle = (productId) => {
+    const product = profile.likes.find(p => p.id === productId)
+
+    if (isLiked(productId)) {
+      unLikeProduct(productId)
+        .then(() => {
+          setProfile(prev => ({
+            ...prev,
+            likes: prev.likes.filter(p => p.id !== productId) || []
+          }))
+        })
+        .catch(err => console.error("Error unliking product:", err))
+    } else {
+      likeProduct(productId)
+        .then(() => {
+          const likedProduct = profile.recommendations?.find(r => r.product.id === productId)?.product
+            || profile.recommended_by?.find(r => r.product.id === productId)?.product
+
+          if (likedProduct) {
+            setProfile(prev => ({
+              ...prev,
+              likes: [...prev.likes, likedProduct]
+            }))
+          }
+        })
+        .catch(err => console.error("Error liking product:", err))
+    }
+  }
+
+  if (!profile) return <p>Loading profile...</p>
 
   // Helper function to render empty state
   const renderEmptyState = (message) => (
