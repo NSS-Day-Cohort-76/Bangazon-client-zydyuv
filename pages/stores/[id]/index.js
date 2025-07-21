@@ -1,73 +1,77 @@
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import Layout from '../../../components/layout'
-import Navbar from '../../../components/navbar'
-import { ProductCard } from '../../../components/product/card'
-import Detail from '../../../components/store/detail'
-import { useAppContext } from '../../../context/state'
-import { deleteProduct } from '../../../data/products'
-import { favoriteStore, getStoreById, unfavoriteStore } from '../../../data/stores'
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Layout from "../../../components/layout";
+import Navbar from "../../../components/navbar";
+import { ProductCard } from "../../../components/product/card";
+import Detail from "../../../components/store/detail";
+import { useAppContext } from "../../../context/state";
+import { deleteProduct } from "../../../data/products";
+import {
+  favoriteStore,
+  getStoreById,
+  unfavoriteStore,
+} from "../../../data/stores";
 
 export default function StoreDetail() {
-  const { profile } = useAppContext()
-  const router = useRouter()
-  const { id } = router.query
-  const [store, setStore] = useState(null)
-  const [isOwner, setIsOwner] = useState(false)
-  const [storeNotFound, setStoreNotFound] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [fadeIn, setFadeIn] = useState(false)
+  const { profile } = useAppContext();
+  const router = useRouter();
+  const { id } = router.query;
+  const [store, setStore] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
+  const [storeNotFound, setStoreNotFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
     if (id) {
-      console.log("Router store ID param:", id)
-      refresh()
+      console.log("Router store ID param:", id);
+      refresh();
       if (profile?.store?.id) {
-        setIsOwner(parseInt(id) === profile.store.id)
+        setIsOwner(parseInt(id) === profile.store.id);
       }
     }
-  }, [id, profile])
+  }, [id, profile]);
 
   // Trigger fade-in animation when store loads
   useEffect(() => {
     if (store && !isLoading) {
-      setTimeout(() => setFadeIn(true), 100)
+      setTimeout(() => setFadeIn(true), 100);
     }
-  }, [store, isLoading])
+  }, [store, isLoading]);
 
   const refresh = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     getStoreById(id)
       .then((storeData) => {
         if (storeData) {
-          setStore(storeData)
-          setStoreNotFound(false)
+          setStore(storeData);
+          setStoreNotFound(false);
         } else {
-          setStore(null)
-          setStoreNotFound(true)
+          setStore(null);
+          setStoreNotFound(true);
         }
       })
       .catch((err) => {
-        console.error("Store fetch failed:", err)
-        setStore(null)
-        setStoreNotFound(true)
+        console.error("Store fetch failed:", err);
+        setStore(null);
+        setStoreNotFound(true);
       })
       .finally(() => {
-        setIsLoading(false)
-      })
-  }
+        setIsLoading(false);
+      });
+  };
 
   const removeProduct = (productId) => {
-    deleteProduct(productId).then(refresh)
-  }
+    deleteProduct(productId).then(refresh);
+  };
 
   const favorite = () => {
-    favoriteStore(id).then(refresh)
-  }
+    favoriteStore(id).then(refresh);
+  };
 
   const unfavorite = () => {
-    unfavoriteStore(id).then(refresh)
-  }
+    unfavoriteStore(id).then(refresh);
+  };
 
   // Enhanced loading state with animated skeleton
   if (isLoading) {
@@ -87,7 +91,9 @@ export default function StoreDetail() {
                 </span>
                 Loading store details...
               </p>
-              <progress className="progress is-primary" max="100">Loading</progress>
+              <progress className="progress is-primary" max="100">
+                Loading
+              </progress>
             </div>
           </div>
         </div>
@@ -113,7 +119,7 @@ export default function StoreDetail() {
             display: flex;
             justify-content: center;
           }
-          
+
           .spinner-border {
             width: 3rem;
             height: 3rem;
@@ -122,48 +128,61 @@ export default function StoreDetail() {
             border-radius: 50%;
             animation: spin 1s linear infinite;
           }
-          
+
           @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
           }
-          
+
           .skeleton-box {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
           }
-          
+
           .skeleton-image {
             height: 150px;
             background: #e0e0e0;
             border-radius: 6px;
           }
-          
+
           .skeleton-line {
             height: 20px;
             background: #e0e0e0;
             border-radius: 4px;
           }
-          
+
           .skeleton-line.is-half {
             width: 60%;
           }
-          
+
           .skeleton-button {
             height: 40px;
             background: #e0e0e0;
             border-radius: 6px;
             width: 120px;
           }
-          
+
           @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
           }
         `}</style>
       </div>
-    )
+    );
   }
 
   // Enhanced error state
@@ -183,16 +202,16 @@ export default function StoreDetail() {
                 The store you're looking for doesn't exist or has been removed.
               </p>
               <div className="buttons is-centered mt-5">
-                <button 
+                <button
                   className="button is-primary is-medium"
-                  onClick={() => router.push('/stores')}
+                  onClick={() => router.push("/stores")}
                 >
                   <span className="icon">
                     <i className="fas fa-arrow-left"></i>
                   </span>
                   <span>Browse All Stores</span>
                 </button>
-                <button 
+                <button
                   className="button is-light is-medium"
                   onClick={() => router.back()}
                 >
@@ -206,18 +225,18 @@ export default function StoreDetail() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className={`store-detail-container ${fadeIn ? 'fade-in' : ''}`}>
+    <div className={`store-detail-container ${fadeIn ? "fade-in" : ""}`}>
       {/* Enhanced store detail component with animation */}
       <div className="store-header-section">
-        <Detail 
-          store={store} 
-          isOwner={isOwner} 
-          favorite={favorite} 
-          unfavorite={unfavorite} 
+        <Detail
+          store={store}
+          isOwner={isOwner}
+          favorite={favorite}
+          unfavorite={unfavorite}
         />
       </div>
 
@@ -255,11 +274,11 @@ export default function StoreDetail() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="columns is-multiline products-grid">
                   {store.products.map((product, index) => (
-                    <div 
-                      key={product.id} 
+                    <div
+                      key={product.id}
                       className="column is-one-quarter-desktop is-one-third-tablet is-half-mobile product-card-wrapper"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
@@ -281,17 +300,18 @@ export default function StoreDetail() {
                         <i className="fas fa-box-open fa-3x"></i>
                       </span>
                     </div>
-                    <h3 className="title is-5 has-text-grey">No Products Yet</h3>
+                    <h3 className="title is-5 has-text-grey">
+                      No Products Yet
+                    </h3>
                     <p className="subtitle is-6 has-text-grey-dark mb-4">
-                      {isOwner 
+                      {isOwner
                         ? "Start building your store by adding your first product!"
-                        : "This store is just getting started. Check back soon for new products!"
-                      }
+                        : "This store is just getting started. Check back soon for new products!"}
                     </p>
                     {isOwner && (
-                      <button 
+                      <button
                         className="button is-primary is-medium"
-                        onClick={() => router.push('/products/create')}
+                        onClick={() => router.push("/products/create")}
                       >
                         <span className="icon">
                           <i className="fas fa-plus"></i>
@@ -313,20 +333,20 @@ export default function StoreDetail() {
           transform: translateY(20px);
           transition: all 0.6s ease-out;
         }
-        
+
         .store-detail-container.fade-in {
           opacity: 1;
           transform: translateY(0);
         }
-        
+
         .store-header-section {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           position: relative;
           overflow: hidden;
         }
-        
+
         .store-header-section::before {
-          content: '';
+          content: "";
           position: absolute;
           top: 0;
           left: 0;
@@ -335,33 +355,33 @@ export default function StoreDetail() {
           background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.1"><polygon points="1000,100 1000,0 0,100"/></svg>');
           background-size: cover;
         }
-        
+
         .products-section {
           background: #fafafa;
           min-height: 400px;
         }
-        
+
         .products-grid {
           gap: 1.5rem;
         }
-        
+
         .product-card-wrapper {
           opacity: 0;
           transform: translateY(30px);
           animation: slideInUp 0.6s ease-out forwards;
         }
-        
+
         @keyframes slideInUp {
           to {
             opacity: 1;
             transform: translateY(0);
           }
         }
-        
+
         .empty-products-state {
           animation: fadeInScale 0.8s ease-out;
         }
-        
+
         @keyframes fadeInScale {
           from {
             opacity: 0;
@@ -372,44 +392,44 @@ export default function StoreDetail() {
             transform: scale(1);
           }
         }
-        
+
         .level .title {
           margin-bottom: 0 !important;
         }
-        
+
         .box {
           border-radius: 12px;
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
           transition: all 0.3s ease;
         }
-        
+
         .box:hover {
           transform: translateY(-2px);
           box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
-        
+
         .button {
           border-radius: 8px;
           font-weight: 600;
           transition: all 0.3s ease;
         }
-        
+
         .button:hover {
           transform: translateY(-1px);
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
-        
+
         .select select {
           border-radius: 6px;
           border-color: #e5e5e5;
         }
-        
+
         @media (max-width: 768px) {
           .products-grid {
             margin-left: -0.75rem;
             margin-right: -0.75rem;
           }
-          
+
           .product-card-wrapper {
             padding-left: 0.75rem;
             padding-right: 0.75rem;
@@ -417,7 +437,7 @@ export default function StoreDetail() {
         }
       `}</style>
     </div>
-  )
+  );
 }
 
 StoreDetail.getLayout = function getLayout(page) {
@@ -426,5 +446,5 @@ StoreDetail.getLayout = function getLayout(page) {
       <Navbar />
       {page}
     </Layout>
-  )
-}
+  );
+};
