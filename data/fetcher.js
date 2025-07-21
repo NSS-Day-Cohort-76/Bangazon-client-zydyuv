@@ -12,11 +12,15 @@ const catchError = (err) => {
     window.location.href = "/login";
     return;
   }
+
   if (err.message === '404') {
-    throw err;
+    console.warn("Resource not found (404)");
+    return null; // ✅ return null instead of throwing
   }
-  throw err;
+
+  throw err; // only rethrow unknown errors
 };
+
 
 export const fetchWithResponse = (resource, options = {}) =>
   fetch(`${API_URL}/${resource}`, options)
