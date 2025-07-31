@@ -96,7 +96,7 @@ export function Detail({ product, like, unlike }) {
         title="Recommend this product to a user"
       >
         <Input id="username" label="Enter a username" refEl={usernameEl}>
-          {showError && (
+          {!showError && (
             <p className="help is-danger">This user doesn't exist</p>
           )}
           {successMsg && <p className="help is-success">{successMsg}</p>}
