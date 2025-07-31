@@ -92,15 +92,31 @@ export function editProduct(id, product) {
   })
 }
 
-export function recommendProduct(id, username) {
-  return fetchWithResponse(`products/${id}/recommend`, {
+// export function recommendProduct(id, username) {
+//   return fetchWithResponse(`products/${id}/recommend`, {
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Token ${localStorage.getItem('token')}`,
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({username})
+//   })
+// }
+
+export async function recommendProduct(toUsername, productId) {
+  const res = await fetchWithResponse(`/products/${productId}/recommend`, {
     method: 'POST',
     headers: {
-      Authorization: `Token ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${localStorage.getItem("token")}`
     },
-    body: JSON.stringify({username})
-  })
+    body: JSON.stringify({ to_username: toUsername })
+  });
+  if (res.status === 204) return; // Success, no content
+  if (!res.ok) throw new Error('Failed to recommend product');
+  // Only try to parse JSON if there is content
+  if (res.headers.get("content-length") === "0" || res.status === 204) return;
+  return res.json();
 }
 
 export function likeProduct(productId) {

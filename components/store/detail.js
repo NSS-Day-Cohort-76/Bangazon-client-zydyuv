@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function Detail({ store, isOwner, favorite, unfavorite }) {
+export default function Detail({ store, isOwner, toggleFavorite }) {
   const ownerButtons = () => {
     return (
       <div className="buttons">
@@ -13,28 +13,17 @@ export default function Detail({ store, isOwner, favorite, unfavorite }) {
       </div>
     )
   }
+  
   const userButtons = () => {
-    return (
-      <>
-        {
-          store.is_favorite ?
-            <button className="button is-primary is-inverted" onClick={unfavorite}>
-              <span className="icon is-small">
-                <i className="fas fa-heart-broken"></i>
-              </span>
-              <span>Unfavorite Store</span>
-            </button>
-            :
-            <button className="button is-primary is-inverted" onClick={favorite}>
-              <span className="icon is-small">
-                <i className="fas fa-heart"></i>
-              </span>
-              <span>Favorite Store</span>
-            </button>
-        }
-      </>
-    )
-  }
+  return (
+    <button className="button is-primary is-inverted" onClick={toggleFavorite}>
+      <span className="icon is-small">
+        <i className={`fas ${store.is_favorited ? "fa-heart-broken" : "fa-heart"}`}></i>
+      </span>
+      <span>{store.is_favorited ? "Unfavorite Store" : "Favorite Store"}</span>
+    </button>
+  );
+}
 
   return (
     <section className="hero is-primary mb-3">

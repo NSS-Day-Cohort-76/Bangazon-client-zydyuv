@@ -93,7 +93,7 @@ export default function Profile() {
             <div className="box has-text-centered">
               <p className="heading">Favorite Stores</p>
               <p className="title is-3 has-text-primary">
-                {profile.favorites?.length || 0}
+                {profile.favorite_stores?.length || 0}
               </p>
             </div>
           </div>
@@ -101,7 +101,7 @@ export default function Profile() {
             <div className="box has-text-centered">
               <p className="heading">Products Recommended</p>
               <p className="title is-3 has-text-info">
-                {profile.recommended_by?.length || 0}
+                {profile.recommended_items?.length || 0}
               </p>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function Profile() {
             <div className="box has-text-centered">
               <p className="heading">Recommendations Received</p>
               <p className="title is-3 has-text-success">
-                {profile.recommendations?.length || 0}
+                {profile.recommended_items?.length || 0}
               </p>
             </div>
           </div>
@@ -130,8 +130,8 @@ export default function Profile() {
             <CardLayout title="Favorite Stores" width="is-full">
               {[
                 <div className="columns is-multiline" key="content">
-                  {profile.favorites && profile.favorites.length > 0 ? (
-                    profile.favorites.map(favorite => (
+                  {profile.favorite_stores && profile.favorite_stores.length > 0 ? (
+                    profile.favorite_stores.map(favorite => (
                       <StoreCard store={favorite} key={favorite.id} width="is-one-third-desktop is-half-tablet" />
                     ))
                   ) : (
@@ -150,8 +150,8 @@ export default function Profile() {
             <CardLayout title="Products You've Recommended" width="is-full">
               {[
                 <div className="columns is-multiline" key="content">
-                  {profile.recommended_by && profile.recommended_by.length > 0 ? (
-                    profile.recommended_by.map(recommendation => (
+                  {profile.recommends && profile.recommends.length > 0 ? (
+                    profile.recommends.map(recommendation => (
                       <ProductCard 
                         product={recommendation.product} 
                         key={recommendation.product.id} 
@@ -177,8 +177,8 @@ export default function Profile() {
             <CardLayout title="Products Recommended to You" width="is-full">
               {[
                 <div className="columns is-multiline" key="content">
-                  {profile.recommendations && profile.recommendations.length > 0 ? (
-                    profile.recommendations.map(recommendation => (
+                  {profile.recommended_items && profile.recommended_items.length > 0 ? (
+                    profile.recommended_items.map(recommendation => (
                       <ProductCard 
                         product={recommendation.product} 
                         key={recommendation.product.id} 

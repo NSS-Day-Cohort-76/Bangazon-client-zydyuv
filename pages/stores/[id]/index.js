@@ -6,11 +6,7 @@ import { ProductCard } from "../../../components/product/card";
 import Detail from "../../../components/store/detail";
 import { useAppContext } from "../../../context/state";
 import { deleteProduct } from "../../../data/products";
-import {
-  favoriteStore,
-  getStoreById,
-  unfavoriteStore,
-} from "../../../data/stores";
+import { getStoreById, toggleFavoriteStore } from "../../../data/stores";
 
 export default function StoreDetail() {
   const { profile } = useAppContext();
@@ -65,13 +61,17 @@ export default function StoreDetail() {
     deleteProduct(productId).then(refresh);
   };
 
-  const favorite = () => {
-    favoriteStore(id).then(refresh);
+  const toggleFavorite = () => {
+    toggleFavoriteStore(id, store.is_favorited).then(refresh);
   };
 
-  const unfavorite = () => {
-    unfavoriteStore(id).then(refresh);
-  };
+  // const favorite = () => {
+  //   favoriteStore(id).then(refresh);
+  // };
+
+  // const unfavorite = () => {
+  //   unfavoriteStore(id).then(refresh);
+  // };
 
   // Enhanced loading state with animated skeleton
   if (isLoading) {
@@ -232,11 +232,16 @@ export default function StoreDetail() {
     <div className={`store-detail-container ${fadeIn ? "fade-in" : ""}`}>
       {/* Enhanced store detail component with animation */}
       <div className="store-header-section">
-        <Detail
+        {/* <Detail
           store={store}
           isOwner={isOwner}
           favorite={favorite}
           unfavorite={unfavorite}
+        /> */}
+        <Detail
+          store={store}
+          isOwner={isOwner}
+          toggleFavorite={toggleFavorite}
         />
       </div>
 
