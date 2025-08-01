@@ -45,22 +45,34 @@ export function editStore(store) {
   })
 }
 
-export function favoriteStore(storeId) {
-  return fetchWithoutResponse(`stores/${storeId}/favorite`, {
+// export function favoriteStore(storeId) {
+//   return fetchWithoutResponse('favoritesellers', {
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Token ${localStorage.getItem('token')}`,
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({ store_id: storeId })
+//   })
+// }
+
+// export function unfavoriteStore(storeId) {
+//   return fetchWithoutResponse('favoritesellers/remove', {
+//     method: 'DELETE',
+//     headers: {
+//       Authorization: `Token ${localStorage.getItem('token')}`,
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({ store_id: storeId })
+//   })
+// }
+
+export function toggleFavoriteStore(storeId, isFavorited) {
+  return fetchWithoutResponse(`stores/${storeId}/${isFavorited ? 'unfavorite' : 'favorite'}`, {
     method: 'POST',
     headers: {
       Authorization: `Token ${localStorage.getItem('token')}`,
       'Content-Type': 'application/json'
-    },
-  })
-}
-
-export function unfavoriteStore(storeId) {
-  return fetchWithoutResponse(`stores/${storeId}/unfavorite`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Token ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json'
-    },
+    }
   })
 }
