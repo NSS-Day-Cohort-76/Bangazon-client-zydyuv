@@ -316,7 +316,7 @@ export default function StoreDetail() {
                     {isOwner && (
                       <button
                         className="button is-primary is-medium"
-                        onClick={() => router.push("/products/create")}
+                        onClick={() => router.push("/products/new")}
                       >
                         <span className="icon">
                           <i className="fas fa-plus"></i>
