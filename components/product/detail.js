@@ -69,15 +69,6 @@ export function Detail({ product, like, unlike }) {
     });
   };
 
-  // const handleUnlike = () => {
-  //   unLikeProduct(product.id).then(() => {
-  //     setIsLiked(false)
-  //     setProfile(prev => ({
-  //       ...prev,
-  //       likes: prev.likes.filter(p => p.id !== product.id)
-  //     }))
-  //   })
-  // }
   const handleUnlike = () => {
     unLikeProduct(product.id).then(() => {
       setIsLiked(false);

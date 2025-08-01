@@ -101,7 +101,7 @@ export default function Profile() {
             <div className="box has-text-centered">
               <p className="heading">Products Recommended</p>
               <p className="title is-3 has-text-info">
-                {profile.recommended_items?.length || 0}
+                {profile.recommends?.length || 0}
               </p>
             </div>
           </div>
@@ -157,8 +157,8 @@ export default function Profile() {
                         key={recommendation.product.id} 
                         width="is-one-third-desktop is-half-tablet"
                         onLike={() => handleLikeToggle(recommendation.product.id)}
-                        onUnlike={() => handleLikeToggle(recommendation.product.id)}
-                        liked={isLiked(recommendation.product.id)}
+                        // onUnlike={() => handleLikeToggle(recommendation.product.id)}
+                        // liked={isLiked(recommendation.product.id)}
                       />
                     ))
                   ) : (
@@ -184,8 +184,8 @@ export default function Profile() {
                         key={recommendation.product.id} 
                         width="is-one-third-desktop is-half-tablet"
                         onLike={() => handleLikeToggle(recommendation.product.id)}
-                        onUnlike={() => handleLikeToggle(recommendation.product.id)}
-                        liked={isLiked(recommendation.product.id)}
+                        // onUnlike={() => handleLikeToggle(recommendation.product.id)}
+                        // liked={isLiked(recommendation.product.id)}
                       />
                     ))
                   ) : (
